@@ -1,0 +1,16 @@
+# dependencies
+/node_modules
+
+# testing
+/coverage
+
+# production
+/dist
+
+# workspace
+.vscode/
+
+.eslintcache
+
+# misc
+.DS_Store
