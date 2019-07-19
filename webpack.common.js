@@ -53,7 +53,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.(ttf|eot|svg|png|jpg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        test: /\.(woff2|woff|ttf|eot|svg|png|jpg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         use: [
           {
             loader: 'file-loader',
