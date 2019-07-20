@@ -72,10 +72,10 @@ class Post extends React.Component {
             <Feed.Event>
               <Feed.Content>
                 <Feed.Date content={Moment(date.toString()).fromNow()} />
-                <Feed.Summary>{htmlContent}</Feed.Summary>
               </Feed.Content>
             </Feed.Event>
           </Feed>
+          {htmlContent}
         </Card.Content>
       </Card>
     )
