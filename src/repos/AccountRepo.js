@@ -2,7 +2,14 @@ class AccountRepo {
   constructor() {
     this.account = {
       lines: {
-        current: 'https://story_.com/line/metadata/1',
+        current: {
+          uri: 'https://story_.com/line/metadata/1',
+          meta: {
+            styles: {
+              backgroundColor: '#f7feff',
+            },
+          },
+        },
       },
     }
   }

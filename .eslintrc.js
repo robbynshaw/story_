@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = {
   extends: ['airbnb', 'prettier/react'],
   env: {
@@ -25,5 +27,12 @@ module.exports = {
         ignoreRegExpLiterals: true,
       },
     ],
+  },
+  settings: {
+    'import/resolver': {
+      webpack: {
+        config: 'webpack.common.js',
+      },
+    },
   },
 }

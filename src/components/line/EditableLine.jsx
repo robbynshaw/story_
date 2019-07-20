@@ -29,14 +29,14 @@ class EditableLine extends React.Component {
     const { resource, postRepo, lineRepo } = this.props
 
     return (
-      <div>
+      <>
         {resource && (
           <Line resource={resource} postRepo={postRepo} lineRepo={lineRepo} />
         )}
         <EditorContainer ref={el => this.setEditorElement(el)}>
           <PostEditor resource={resource} />
         </EditorContainer>
-      </div>
+      </>
     )
   }
 }

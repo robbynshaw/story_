@@ -57,12 +57,12 @@ class Line extends React.Component {
     const { title, index } = this.state
 
     return (
-      <div>
+      <>
         <h1>{title}</h1>
         {index && (
           <PostList resource={index} postRepo={postRepo} lineRepo={lineRepo} />
         )}
-      </div>
+      </>
     )
   }
 }
