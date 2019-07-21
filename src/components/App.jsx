@@ -1,7 +1,9 @@
 import React from 'react'
-import { Container, Menu, MenuItem } from 'semantic-ui-react'
+import { Container, MenuItem } from 'semantic-ui-react'
+import RepoFactory from 'src/repos/RepoFactory'
+import TopMenuBar from './commons/TopMenuBar'
 import EditableLine from './line/EditableLine'
-import RepoFactory from '../repos/RepoFactory'
+import LineWrapper from './line/LineWrapper'
 
 class App extends React.Component {
   constructor(props) {
@@ -13,6 +15,7 @@ class App extends React.Component {
 
     this.state = {
       currentLine: '',
+      lineMeta: {},
       error: null,
     }
   }
@@ -22,8 +25,10 @@ class App extends React.Component {
   }
 
   setError(err) {
-    console.error(err)
-    this.state.error = err
+    this.setState({ error: err }, () => {
+      const { error } = this.state
+      console.error(error)
+    })
   }
 
   refreshFromUser() {
@@ -35,23 +40,25 @@ class App extends React.Component {
 
   loadFromUserData(userdata) {
     const {
-      lines: { current },
+      lines: {
+        current: { uri, meta },
+      },
     } = userdata
 
-    this.state.currentLine = current
-    this.setState(() => ({
-      currentLine: current,
-    }))
+    this.setState({
+      currentLine: uri,
+      lineMeta: meta,
+    })
   }
 
   render() {
-    const { currentLine } = this.state
+    const { currentLine, lineMeta } = this.state
 
     return (
-      <div>
-        <Menu>
+      <LineWrapper {...lineMeta}>
+        <TopMenuBar>
           <MenuItem header>Story_ (aka Storyline)</MenuItem>
-        </Menu>
+        </TopMenuBar>
         <Container text style={{ margin: '2em' }}>
           {currentLine && (
             <EditableLine
@@ -61,7 +68,7 @@ class App extends React.Component {
             />
           )}
         </Container>
-      </div>
+      </LineWrapper>
     )
   }
 }
