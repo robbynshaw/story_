@@ -10,8 +10,8 @@ import PostRepo from './PostRepo'
 
 function createRepoFactory() {
   const accountRepo = new AccountRepo()
-  const lineRepo = new LineRepo()
   const postRepo = new PostRepo()
+  const lineRepo = new LineRepo(postRepo)
 
   return {
     getAccountRepo() {

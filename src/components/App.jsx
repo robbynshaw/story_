@@ -3,6 +3,10 @@ import { Container, MenuItem } from 'semantic-ui-react'
 import RepoFactory from 'src/repos/RepoFactory'
 import TopMenuBar from './commons/TopMenuBar'
 import EditableLine from './line/EditableLine'
+import Importer from 'src/lib/Importer'
+import accounts from 'src/testdata/accounts'
+import lines from 'src/testdata/lines'
+import posts from 'src/testdata/posts'
 import LineWrapper from './line/LineWrapper'
 
 class App extends React.Component {
@@ -17,6 +21,16 @@ class App extends React.Component {
       currentLine: '',
       lineMeta: {},
       error: null,
+    }
+
+    // Import test data
+    if (process.env.NODE_ENV === 'development') {
+      const importer = new Importer()
+      importer.importSingle({
+        accounts,
+        posts,
+        lines,
+      })
     }
   }
 
@@ -33,7 +47,7 @@ class App extends React.Component {
 
   refreshFromUser() {
     this.accountRepo
-      .get()
+      .get('testy')
       .then(userdata => this.loadFromUserData(userdata))
       .catch(err => this.setError(err))
   }

@@ -38,12 +38,17 @@ class RichTextEditor extends React.Component {
 
     const { placeholder } = props
     this.el = null
-    this.state = { editorState: EditorState.createEmpty(), placeholder }
+    this.state = {
+      editorState: EditorState.createEmpty(),
+      placeholder,
+      currentMd: '',
+    }
     this.setElement = (el) => {
       this.el = el
     }
     this.focus = () => this.el.focus()
     this.onChange = this.onChange.bind(this)
+    this.onSave = this.onSave.bind(this)
     this.handleKeyCommand = this.handleKeyCommand.bind(this)
     this.mapKeyToEditorCommand = this.mapKeyToEditorCommand.bind(this)
     this.toggleBlockType = this.toggleBlockType.bind(this)
@@ -55,15 +60,20 @@ class RichTextEditor extends React.Component {
     this.setState({ editorState })
 
     const raw = convertToRaw(editorState.getCurrentContent())
-    // console.log('raw', raw)
     const md = draftToMarkdown(raw)
-    console.log('md', md)
+    this.setState({ currentMd: md })
+  }
+
+  onSave() {
+    const { onSave } = this.props
+    onSave(this.state.currentMd)
   }
 
   clearPlaceholder() {
     this.setState(state => ({
       editorState: state.editorState,
       placeholder: null,
+      currentMd: state.currentMd,
     }))
   }
 
@@ -128,7 +138,7 @@ class RichTextEditor extends React.Component {
           onToggle={this.toggleInlineStyle}
         /> */}
         <ActionControls
-          onSave={() => console.log('Saved')}
+          onSave={this.onSave}
           onSwitch={() => console.log('Switched')}
         />
         <div role="editor" className={className} onClick={this.focus}>
@@ -152,6 +162,11 @@ class RichTextEditor extends React.Component {
 
 RichTextEditor.propTypes = {
   placeholder: PropTypes.string.isRequired,
+  onSave: PropTypes.func,
+}
+
+RichTextEditor.defaultProps = {
+  onSave: () => {},
 }
 
 export default RichTextEditor

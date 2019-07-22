@@ -63,8 +63,6 @@ class Post extends React.Component {
 
     const htmlContent = this.processor.processSync(content).contents
 
-    console.log(date.toString())
-
     return (
       <Card fluid>
         <Card.Content>

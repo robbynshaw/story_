@@ -10,6 +10,12 @@ class PostList extends React.Component {
     this.state = {
       items: [],
     }
+
+    this.onError = this.onError.bind(this)
+    this.setItems = this.setItems.bind(this)
+    this.onPostAdd = this.onPostAdd.bind(this)
+    this.hookupEvents = this.hookupEvents.bind(this)
+    this.refreshItems = this.refreshItems.bind(this)
   }
 
   componentDidMount() {
@@ -23,28 +29,57 @@ class PostList extends React.Component {
 
   setItems(items) {
     this.setState(() => ({
-      items,
+      items: {
+        raw: [...items.raw],
+      },
     }))
   }
 
-  refreshItems() {
+  onPostAdd(update) {
+    const { item } = update
+    console.log('Subscribed line received update', update)
+
+    this.setState((state) => {
+      const {
+        items: { raw },
+      } = state
+      const newRaw = [...raw]
+      newRaw.push(item)
+      return {
+        items: {
+          raw: newRaw,
+        },
+      }
+    })
+  }
+
+  hookupEvents(lineRepo, resource) {
+    lineRepo.events.off('post.add', this.onPostAdd)
+    lineRepo.events.on('post.add', this.onPostAdd)
+  }
+
+  async refreshItems() {
     const { resource, lineRepo } = this.props
 
     if (!resource) {
       return
     }
 
-    lineRepo
-      .getIndex(resource)
-      .then(items => this.setItems(items))
-      .catch(err => this.onError(err))
+    this.hookupEvents(lineRepo, resource)
+
+    const items = await lineRepo.getIndex(resource)
+    this.setItems(items)
   }
 
   render() {
-    const { items } = this.state
+    let {
+      items: { raw },
+    } = this.state
     const { postRepo } = this.props
 
-    const lis = items.map((item) => {
+    raw = raw || []
+
+    const lis = raw.map((item) => {
       const { resource } = item
 
       return <Post key={resource} resource={resource} postRepo={postRepo} />
