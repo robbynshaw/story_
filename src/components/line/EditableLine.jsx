@@ -87,7 +87,7 @@ class EditableLine extends React.Component {
     console.log('rendering editable', this.state)
 
     return (
-      <div>
+      <>
         {resource && title && (
           <Line
             title={title}
@@ -100,7 +100,7 @@ class EditableLine extends React.Component {
         <EditorContainer ref={this.setEditorElement}>
           <PostEditor resource={resource} lineRepo={lineRepo} />
         </EditorContainer>
-      </div>
+      </>
     )
   }
 }

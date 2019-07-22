@@ -13,12 +13,12 @@ class Line extends React.Component {
     } = this.props
 
     return (
-      <div>
+      <>
         <h1>{title}</h1>
         {index && (
           <PostList resource={index} postRepo={postRepo} lineRepo={lineRepo} />
         )}
-      </div>
+      </>
     )
   }
 }

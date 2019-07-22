@@ -3,10 +3,10 @@
   for development purposes
 */
 
+import StaticServices from 'src/lib/StaticServices'
 import AccountRepo from './AccountRepo'
 import LineRepo from './LineRepo'
 import PostRepo from './PostRepo'
-import StaticServices from '../lib/StaticServices'
 
 function createRepoFactory() {
   const accountRepo = new AccountRepo()
