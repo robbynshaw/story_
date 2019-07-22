@@ -1,10 +1,8 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import UUID from 'uuid'
 import { Card } from 'semantic-ui-react'
 import RichTextEditor from './RichTextEditor'
-// import Editor from 'draft-js-plugins-editor'
-// import createMarkdownPlugin from 'draft-js-markdown-plugin'
-// import { EditorState, RichUtils } from 'draft-js'
-// import BlockStyleControls from './BlockStyleControls'
 import './post-editor.css'
 
 const famousFirstLines = [
@@ -29,22 +27,55 @@ class PostEditor extends React.Component {
 
     this.state = {
       placeholder: firstLine,
-      // editorState: EditorState.createEmpty(),
-      // plugins: [createMarkdownPlugin()],
+      key: UUID(),
     }
+
+    this.reset = this.reset.bind(this)
+    this.onSave = this.onSave.bind(this)
+  }
+
+  reset() {
+    const i = Math.floor(Math.random() * famousFirstLines.length)
+    const firstLine = famousFirstLines[i]
+
+    this.setState({
+      key: UUID(),
+      placeholder: firstLine,
+    })
+  }
+
+  async onSave(md) {
+    const { lineRepo, resource } = this.props
+    const update = await lineRepo.addPost(resource, {
+      content: md,
+    })
+    this.reset()
   }
 
   render() {
-    const { placeholder } = this.state
+    const { placeholder, content, key } = this.state
+    console.log('re-rendering editor')
 
     return (
       <Card fluid>
         <Card.Content>
-          <RichTextEditor placeholder={placeholder} />
+          <RichTextEditor
+            key={key}
+            placeholder={placeholder}
+            onSave={this.onSave}
+            content={content}
+          />
         </Card.Content>
       </Card>
     )
   }
+}
+
+PostEditor.propTypes = {
+  resource: PropTypes.string.isRequired,
+  lineRepo: PropTypes.shape({
+    add: PropTypes.func.isRequired,
+  }),
 }
 
 export default PostEditor

@@ -1,14 +1,17 @@
 class AccountRepo {
   constructor() {
-    this.account = {
-      lines: {
-        current: 'https://story_.com/line/metadata/1',
-      },
-    }
+    this.accounts = {}
+
+    this.update = this.update.bind(this)
+    this.get = this.get.bind(this)
   }
 
-  get() {
-    return new Promise(res => res(this.account))
+  update(resource, account) {
+    this.accounts[resource] = account
+  }
+
+  get(username) {
+    return new Promise(res => res(this.accounts[username]))
   }
 }
 

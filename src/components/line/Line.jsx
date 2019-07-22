@@ -5,56 +5,12 @@ import PostList from './PostList'
 class Line extends React.Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      title: 'Loading...',
-      index: '',
-    }
-  }
-
-  componentDidMount() {
-    this.refreshCurrentLine()
-  }
-
-  onError(err) {
-    const { onError } = this.props
-    onError(err)
-  }
-
-  populate(metadata) {
-    this.setState(() => {
-      const { title, index } = metadata
-      return {
-        title,
-        index,
-      }
-    })
-  }
-
-  refreshCurrentLine() {
-    const { resource, lineRepo } = this.props
-
-    if (!resource) {
-      return
-    }
-
-    lineRepo
-      .getMetadata(resource)
-      .then(metadata => this.loadFromMetadata(metadata))
-      .catch(err => this.onError(err))
-  }
-
-  loadFromMetadata(metadata) {
-    if (!metadata) {
-      this.onError('Unable to refresh current line. No metadata found')
-      return
-    }
-    this.populate(metadata)
   }
 
   render() {
-    const { postRepo, lineRepo } = this.props
-    const { title, index } = this.state
+    const {
+      title, index, postRepo, lineRepo,
+    } = this.props
 
     return (
       <div>
@@ -69,6 +25,8 @@ class Line extends React.Component {
 
 Line.propTypes = {
   resource: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  index: PropTypes.string.isRequired,
   lineRepo: PropTypes.shape({
     getMetadata: PropTypes.func.isRequired,
     getIndex: PropTypes.func.isRequired,
@@ -76,11 +34,6 @@ Line.propTypes = {
   postRepo: PropTypes.shape({
     get: PropTypes.func.isRequired,
   }).isRequired,
-  onError: PropTypes.func,
-}
-
-Line.defaultProps = {
-  onError: err => console.error('error', err),
 }
 
 export default Line

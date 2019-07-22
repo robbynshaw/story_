@@ -9,8 +9,23 @@ const EditorContainer = styled.div`
 `
 
 class EditableLine extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      line: {},
+    }
+
+    this.setEditorElement = this.setEditorElement.bind(this)
+    this.scrollToEditor = this.scrollToEditor.bind(this)
+    this.onError = this.onError.bind(this)
+    this.populate = this.populate.bind(this)
+    this.refreshCurrentLine = this.refreshCurrentLine.bind(this)
+    this.loadFromMetadata = this.loadFromMetadata.bind(this)
+  }
+
   componentDidMount() {
-    this.scrollToEditor()
+    this.refreshCurrentLine()
   }
 
   componentDidUpdate() {
@@ -25,16 +40,65 @@ class EditableLine extends React.Component {
     this.editorElement.scrollIntoView({ behavior: 'smooth' })
   }
 
+  onError(err) {
+    const { onError } = this.props
+    onError(err)
+  }
+
+  populate(metadata) {
+    this.setState(() => {
+      const { title, index } = metadata
+      return {
+        line: {
+          title,
+          index,
+        },
+      }
+    })
+  }
+
+  refreshCurrentLine() {
+    const { resource, lineRepo } = this.props
+
+    if (!resource) {
+      return
+    }
+
+    lineRepo
+      .getMetadata(resource)
+      .then(this.loadFromMetadata)
+      .catch(this.onError)
+  }
+
+  loadFromMetadata(metadata) {
+    if (!metadata) {
+      this.onError('Unable to refresh current line. No metadata found')
+      return
+    }
+    this.populate(metadata)
+  }
+
   render() {
     const { resource, postRepo, lineRepo } = this.props
+    const {
+      line: { title, index },
+    } = this.state
+
+    console.log('rendering editable', this.state)
 
     return (
       <div>
-        {resource && (
-          <Line resource={resource} postRepo={postRepo} lineRepo={lineRepo} />
+        {resource && title && (
+          <Line
+            title={title}
+            resource={resource}
+            index={index}
+            postRepo={postRepo}
+            lineRepo={lineRepo}
+          />
         )}
-        <EditorContainer ref={el => this.setEditorElement(el)}>
-          <PostEditor resource={resource} />
+        <EditorContainer ref={this.setEditorElement}>
+          <PostEditor resource={resource} lineRepo={lineRepo} />
         </EditorContainer>
       </div>
     )
