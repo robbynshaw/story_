@@ -54,6 +54,7 @@ class PostEditor extends React.Component {
 
   render() {
     const { placeholder, content, key } = this.state
+    const { onMediaSelect } = this.props
     console.log('re-rendering editor')
 
     return (
@@ -63,6 +64,7 @@ class PostEditor extends React.Component {
             key={key}
             placeholder={placeholder}
             onSave={this.onSave}
+            onMediaSelect={onMediaSelect}
             content={content}
           />
         </Card.Content>
@@ -76,6 +78,11 @@ PostEditor.propTypes = {
   lineRepo: PropTypes.shape({
     add: PropTypes.func.isRequired,
   }),
+  onMediaSelect: PropTypes.func,
+}
+
+PostEditor.defaultProps = {
+  onMediaSelect: () => {},
 }
 
 export default PostEditor

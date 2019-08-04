@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, MenuItem } from 'semantic-ui-react'
+import { Container, MenuItem, Modal } from 'semantic-ui-react'
 import RepoFactory from 'src/repos/RepoFactory'
 import TopMenuBar from './commons/TopMenuBar'
 import EditableLine from './line/EditableLine'
@@ -8,6 +8,7 @@ import accounts from 'src/testdata/accounts'
 import lines from 'src/testdata/lines'
 import posts from 'src/testdata/posts'
 import LineWrapper from './line/LineWrapper'
+import createWindow from './createWindow';
 
 class App extends React.Component {
   constructor(props) {
@@ -21,7 +22,14 @@ class App extends React.Component {
       currentLine: '',
       lineMeta: {},
       error: null,
+      modal: {
+        open: false,
+        content: undefined,
+      }
     }
+
+    this.onModalOpen = this.onModalOpen.bind(this)
+    this.closeModal = this.closeModal.bind(this)
 
     // Import test data
     if (process.env.NODE_ENV === 'development') {
@@ -52,6 +60,16 @@ class App extends React.Component {
       .catch(err => this.setError(err))
   }
 
+  onModalOpen(name, props) {
+    console.log('onModalOpen called')
+    const content = createWindow(name, props)
+    this.setState({modal: {open: true, content: content }})
+  }
+
+  closeModal() {
+    this.setState({modal: {open: false, content: null}})
+  }
+
   loadFromUserData(userdata) {
     const {
       lines: {
@@ -66,7 +84,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { currentLine, lineMeta } = this.state
+    const { currentLine, lineMeta, modal: { open, content } } = this.state
 
     return (
       <LineWrapper {...lineMeta}>
@@ -79,9 +97,13 @@ class App extends React.Component {
               resource={currentLine}
               postRepo={this.postRepo}
               lineRepo={this.lineRepo}
+              onModalOpen={this.onModalOpen}
             />
           )}
         </Container>
+        <Modal open={open} dimmer='blurring' closeIcon closeOnDimmerClick={true} closeOnEscape={true} onClose={this.closeModal}>
+          {content}
+        </Modal>
       </LineWrapper>
     )
   }

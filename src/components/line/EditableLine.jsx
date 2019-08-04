@@ -22,6 +22,7 @@ class EditableLine extends React.Component {
     this.populate = this.populate.bind(this)
     this.refreshCurrentLine = this.refreshCurrentLine.bind(this)
     this.loadFromMetadata = this.loadFromMetadata.bind(this)
+    this.onMediaSelect = this.onMediaSelect.bind(this)
   }
 
   componentDidMount() {
@@ -78,8 +79,18 @@ class EditableLine extends React.Component {
     this.populate(metadata)
   }
 
+  onMediaSelect() {
+    const { onModalOpen } = this.props
+
+    onModalOpen('media.select', {}, (media) => {
+      console.log('media selected', media)
+    })
+  }
+
   render() {
-    const { resource, postRepo, lineRepo } = this.props
+    const {
+      resource, postRepo, lineRepo, onModalOpen,
+    } = this.props
     const {
       line: { title, index },
     } = this.state
@@ -98,7 +109,11 @@ class EditableLine extends React.Component {
           />
         )}
         <EditorContainer ref={this.setEditorElement}>
-          <PostEditor resource={resource} lineRepo={lineRepo} />
+          <PostEditor
+            resource={resource}
+            lineRepo={lineRepo}
+            onMediaSelect={this.onMediaSelect}
+          />
         </EditorContainer>
       </>
     )
@@ -114,6 +129,11 @@ EditableLine.propTypes = {
   postRepo: PropTypes.shape({
     get: PropTypes.func.isRequired,
   }).isRequired,
+  onModalOpen: PropTypes.func,
+}
+
+EditableLine.defaultProps = {
+  onModalOpen: () => {},
 }
 
 export default EditableLine

@@ -101,6 +101,13 @@ class RichTextEditor extends React.Component {
 
   toggleBlockType(blockType) {
     const { editorState } = this.state
+    const { onMediaSelect } = this.props
+
+    if (blockType === 'media') {
+      onMediaSelect()
+      return
+    }
+
     this.onChange(RichUtils.toggleBlockType(editorState, blockType))
   }
 
@@ -162,10 +169,12 @@ class RichTextEditor extends React.Component {
 
 RichTextEditor.propTypes = {
   placeholder: PropTypes.string.isRequired,
+  onMediaSelect: PropTypes.func,
   onSave: PropTypes.func,
 }
 
 RichTextEditor.defaultProps = {
+  onMediaSelect: () => {},
   onSave: () => {},
 }
 

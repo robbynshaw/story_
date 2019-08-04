@@ -15,6 +15,7 @@ const BLOCK_TYPES = [
   { label: 'UL', style: 'unordered-list-item' },
   { label: 'OL', style: 'ordered-list-item' },
   { label: 'Code Block', style: 'code-block' },
+  { label: 'Img', style: 'media' },
 ]
 
 const BlockStyleControls = (props) => {
