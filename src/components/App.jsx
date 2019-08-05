@@ -89,7 +89,7 @@ class App extends React.Component {
     return (
       <LineWrapper {...lineMeta}>
         <TopMenuBar>
-          <MenuItem header>Story_ (aka Storyline)</MenuItem>
+          <MenuItem header>story-line</MenuItem>
         </TopMenuBar>
         <Container text style={{ margin: '2em' }}>
           {currentLine && (
