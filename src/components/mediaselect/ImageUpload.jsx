@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import Dropzone from 'react-dropzone'
 import Styled from 'styled-components'
 import ByteSize from 'byte-size'
-import { Input } from 'semantic-ui-react'
+import { Input, Button } from 'semantic-ui-react'
+import Thumb from './Thumb'
 
 const DropContainer = Styled.section`
   flex: 1;
@@ -26,32 +27,7 @@ const ThumbContainer = Styled.aside`
   display: flex;
   align-items: center;
   justify-content: center;
-`
-
-const Thumb = Styled.div`
-  display: inline-flex;
-  border-radius: 2px;
-  border: 1px solid #eaeaea;
-  margin-bottom: 8px;
-  margin-right: 8px;
-  max-width: 300px;
-  max-height: 300px;
-  padding: 10px;
-  box-sizing: border-box;
-`
-
-const ThumbInner = Styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
-  overflow: hidden;
-`
-
-const ThumbImg = Styled.img`
-  display: block;
-  width: auto;
-  height: 100%;
+  flex-wrap: wrap;
 `
 
 class ImageUpload extends React.Component {
@@ -59,7 +35,6 @@ class ImageUpload extends React.Component {
     super(props)
 
     this.state = {
-      message: "Drag 'n drop your image here, or click to browse for a file",
       files: [],
     }
 
@@ -79,9 +54,14 @@ class ImageUpload extends React.Component {
     const { files } = this.state
     const { onUpload } = this.props
 
+    const stateFiles = []
+
     if (files.length) {
       for (let i = 0; i < files.length; i += 1) {
         const file = files[i]
+        file.percent = 0
+        file.isLoading = true
+        stateFiles.push(file)
 
         const result = {
           lastModified: file.lastModified,
@@ -94,21 +74,25 @@ class ImageUpload extends React.Component {
         const reader = new FileReader()
         reader.onabort = () => console.log('file reading was aborted')
         reader.onerror = () => console.log('file reading has failed')
-        reader.onload = () => {
-          // Do whatever you want with the file contents
+        reader.onload = (e) => {
           const binaryStr = btoa(reader.result)
           result.data += binaryStr
 
-          // TODO This should set a progress circly bar overlaying
-          // the image
+          if (e.total) {
+            file.percent = (e.loaded / e.total) * 100
+          } else {
+            file.percent = 10
+          }
+
+          this.setState({ files: stateFiles })
         }
 
-        reader.onloadend = () => {
-          // TODO This should change the color of the circly bar and
-          // start making progress as it is saved into the repo.
-          // Then, after it's saved into the repo, we should finally
-          // make this callback here
-          onUpload(result)
+        reader.onloadend = (e) => {
+          // TODO This should add them to the repo as they finish,
+          // then async await all of the repo adds to finish before
+          // dropping the links into the document
+          console.log('complete', e)
+          // onUpload(result)
         }
 
         reader.readAsBinaryString(file)
@@ -117,12 +101,7 @@ class ImageUpload extends React.Component {
   }
 
   render() {
-    const { message, files } = this.state
-
-    let msg = <p>{message}</p>
-    if (files.length) {
-      msg = null
-    }
+    const { files } = this.state
 
     let desc = '<Nothing selected>'
     let disabled = true
@@ -145,22 +124,29 @@ class ImageUpload extends React.Component {
     }
 
     const thumbs = files.map(file => (
-      <Thumb key={file.name}>
-        <ThumbInner>
-          <ThumbImg src={file.preview} />
-        </ThumbInner>
-      </Thumb>
+      <Thumb
+        url={file.preview}
+        isLoading={file.isLoading}
+        percent={file.percent}
+        key={file.name}
+      />
     ))
 
     return (
       <>
         <Dropzone style={{}} onDrop={this.onFileSelect}>
-          {({ getRootProps, getInputProps }) => (
+          {({ getRootProps, getInputProps, open }) => (
             <DropContainer>
               <div {...getRootProps()}>
                 <ThumbContainer>{thumbs}</ThumbContainer>
                 <input {...getInputProps()} />
-                {msg}
+
+                {files.length > 0 || (
+                  <>
+                    <p>Drag &apos;n drop images here</p>
+                    <Button onClick={open}>Open File Dialog</Button>
+                  </>
+                )}
               </div>
             </DropContainer>
           )}

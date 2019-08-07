@@ -38,7 +38,7 @@ StyleButton.propTypes = {
   active: PropTypes.bool.isRequired,
   onToggle: PropTypes.func.isRequired,
   style: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.node.isRequired,
   tabIndex: PropTypes.number.isRequired,
 }
 

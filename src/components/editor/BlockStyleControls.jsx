@@ -14,10 +14,10 @@ import { faMarkdown } from '@fortawesome/free-brands-svg-icons'
 import StyleButton from './StyleButton'
 
 const BLOCK_TYPES = [
-  { label: 'H1', style: 'header-one' },
-  { label: 'H2', style: 'header-two' },
-  { label: 'H3', style: 'header-three' },
-  { label: 'H4', style: 'header-four' },
+  { label: <strong>H1</strong>, style: 'header-one' },
+  { label: <strong>H2</strong>, style: 'header-two' },
+  { label: <strong>H3</strong>, style: 'header-three' },
+  { label: <strong>H4</strong>, style: 'header-four' },
   {
     label: <FontAwesomeIcon icon={faQuoteRight} title="BlockQuote" />,
     style: 'blockquote',
