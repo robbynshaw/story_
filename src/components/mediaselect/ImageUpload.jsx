@@ -4,6 +4,7 @@ import Dropzone from 'react-dropzone'
 import Styled from 'styled-components'
 import ByteSize from 'byte-size'
 import { Input, Button } from 'semantic-ui-react'
+import UploadHandler from 'src/lib/UploadHandler'
 import Thumb from './Thumb'
 
 const DropContainer = Styled.section`
@@ -54,54 +55,18 @@ class ImageUpload extends React.Component {
     const { files } = this.state
     const { onUpload } = this.props
 
-    const stateFiles = []
+    const uploader = new UploadHandler({
+      onComplete: stateFiles => console.log('COMPLETED ALL', stateFiles),
+      onProgress: stateFiles => this.setState({ files: stateFiles }),
+    })
 
-    if (files.length) {
-      for (let i = 0; i < files.length; i += 1) {
-        const file = files[i]
-        file.percent = 0
-        file.isLoading = true
-        stateFiles.push(file)
-
-        const result = {
-          lastModified: file.lastModified,
-          name: file.name,
-          type: 'image',
-          data: '',
-          size: file.size,
-        }
-
-        const reader = new FileReader()
-        reader.onabort = () => console.log('file reading was aborted')
-        reader.onerror = () => console.log('file reading has failed')
-        reader.onload = (e) => {
-          const binaryStr = btoa(reader.result)
-          result.data += binaryStr
-
-          if (e.total) {
-            file.percent = (e.loaded / e.total) * 100
-          } else {
-            file.percent = 10
-          }
-
-          this.setState({ files: stateFiles })
-        }
-
-        reader.onloadend = (e) => {
-          // TODO This should add them to the repo as they finish,
-          // then async await all of the repo adds to finish before
-          // dropping the links into the document
-          console.log('complete', e)
-          // onUpload(result)
-        }
-
-        reader.readAsBinaryString(file)
-      }
-    }
+    uploader.upload(files)
   }
 
   render() {
     const { files } = this.state
+
+    console.log('files', files)
 
     let desc = '<Nothing selected>'
     let disabled = true
@@ -128,7 +93,7 @@ class ImageUpload extends React.Component {
         url={file.preview}
         isLoading={file.isLoading}
         percent={file.percent}
-        key={file.name}
+        key={file.name || file.path}
       />
     ))
 
@@ -170,7 +135,13 @@ class ImageUpload extends React.Component {
 }
 
 ImageUpload.propTypes = {
-  onUpload: PropTypes.func.isRequired,
+  onUpload: PropTypes.func,
+  onSelect: PropTypes.func,
+}
+
+ImageUpload.defaultProps = {
+  onUpload: () => {},
+  onSelect: () => {},
 }
 
 export default ImageUpload
