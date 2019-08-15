@@ -2,20 +2,46 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faCode,
+  faPhotoVideo,
+  faListUl,
+  faListOl,
+  faQuoteRight,
+} from '@fortawesome/free-solid-svg-icons'
+import { faMarkdown } from '@fortawesome/free-brands-svg-icons'
 import StyleButton from './StyleButton'
 
 const BLOCK_TYPES = [
-  { label: 'H1', style: 'header-one' },
-  { label: 'H2', style: 'header-two' },
-  { label: 'H3', style: 'header-three' },
-  { label: 'H4', style: 'header-four' },
-  { label: 'H5', style: 'header-five' },
-  { label: 'H6', style: 'header-six' },
-  { label: 'Blockquote', style: 'blockquote' },
-  { label: 'UL', style: 'unordered-list-item' },
-  { label: 'OL', style: 'ordered-list-item' },
-  { label: 'Code Block', style: 'code-block' },
-  { label: 'Img', style: 'media' },
+  { label: <strong>H1</strong>, style: 'header-one' },
+  { label: <strong>H2</strong>, style: 'header-two' },
+  { label: <strong>H3</strong>, style: 'header-three' },
+  { label: <strong>H4</strong>, style: 'header-four' },
+  {
+    label: <FontAwesomeIcon icon={faQuoteRight} title="BlockQuote" />,
+    style: 'blockquote',
+  },
+  {
+    label: <FontAwesomeIcon icon={faListUl} title="Unordered list" />,
+    style: 'unordered-list-item',
+  },
+  {
+    label: <FontAwesomeIcon icon={faListOl} title="Ordered list" />,
+    style: 'ordered-list-item',
+  },
+  {
+    label: <FontAwesomeIcon icon={faCode} title="Code block" />,
+    style: 'code-block',
+  },
+  {
+    label: <FontAwesomeIcon icon={faMarkdown} title="Switch to markdown" />,
+    style: 'markdown',
+  },
+  {
+    label: <FontAwesomeIcon icon={faPhotoVideo} title="Insert media" />,
+    style: 'media',
+  },
 ]
 
 const BlockStyleControls = (props) => {
@@ -34,7 +60,7 @@ const BlockStyleControls = (props) => {
         return (
           <StyleButton
             tabIndex={tabIndex}
-            key={type.label}
+            key={type.style}
             active={type.style === blockType}
             label={type.label}
             onToggle={onToggle}

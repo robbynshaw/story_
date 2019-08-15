@@ -10,6 +10,7 @@ import {
   convertToRaw,
 } from 'draft-js'
 import { draftToMarkdown } from 'markdown-draft-js'
+import { Menu } from 'semantic-ui-react'
 import BlockStyleControls from './BlockStyleControls'
 import ActionControls from './ActionControls'
 // import InlineStyleControls from './InlineStyleControls'
@@ -136,18 +137,24 @@ class RichTextEditor extends React.Component {
 
     return (
       <div className="RichEditor-root">
-        <BlockStyleControls
-          editorState={editorState}
-          onToggle={this.toggleBlockType}
-        />
-        {/* <InlineStyleControls
+        <Menu secondary>
+          <Menu.Item>
+            <BlockStyleControls
+              editorState={editorState}
+              onToggle={this.toggleBlockType}
+            />
+          </Menu.Item>
+          {/* <InlineStyleControls
           editorState={editorState}
           onToggle={this.toggleInlineStyle}
         /> */}
-        <ActionControls
-          onSave={this.onSave}
-          onSwitch={() => console.log('Switched')}
-        />
+          <Menu.Menu position="right">
+            <ActionControls
+              onSave={this.onSave}
+              onSwitch={() => console.log('Switched')}
+            />
+          </Menu.Menu>
+        </Menu>
         <div role="editor" className={className} onClick={this.focus}>
           <Editor
             onFocus={this.clearPlaceholder}
